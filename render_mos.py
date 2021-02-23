@@ -2,6 +2,9 @@
 """Generate forms for human evaluation."""
 
 from jinja2 import FileSystemLoader, Environment
+import sys
+import codecs
+sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
 
 
 def main():
