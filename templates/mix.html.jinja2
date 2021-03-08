@@ -1,0 +1,111 @@
+{% extends "base_mix.html.jinja2" %}
+{% block heading %}
+    <h1 class="display-4">(Part1/2) MOS 實驗</h1>
+    <p class="lead">合成語音品質評估    Evaluation of Voice Quality</p>
+    <hr class="my-4">
+    <p>
+        感謝您參與本次實驗！
+    </p>
+    <p>
+        在這個實驗中，我們使用電腦合成人類語音。
+        以下的音檔中，包含了真實的錄音以及合成的聲音，並且每句話都有附上文字稿。
+        請受試者使用耳機聆聽，並根據每個音檔的品質，給予以下幾種評分：
+        <ul>
+            <li>５（非常好 Excellent）</li>
+            <li>４（好 Good）</li>
+            <li>３（普通 Fair）</li>
+            <li>２（不好 Poor）</li>
+            <li>１（非常不好 Bad）</li>
+        </ul>
+    </p>
+{% endblock %}
+{% block form_questions %}
+    {% for question in questions %}
+        <div class="card form-group">
+            <div class="card-header">{{ question.title }}</div>
+            <div class="card-body">
+                <p>
+                    <audio controls src="{{ question.audio_path }}">
+                        Your browser does not support the audio element.
+                    </audio><br>
+                    Script: {{question.script}}
+                </p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="{{ question.name }}" id="{{ question.name }}_1" value="5" required>
+                    <label class="form-check-label" for="{{ question.name }}_1">５（非常好 Excellent）</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="{{ question.name }}" id="{{ question.name }}_2" value="4" required>
+                    <label class="form-check-label" for="{{ question.name }}_2">４（好 Good）</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="{{ question.name }}" id="{{ question.name }}_3" value="3" required>
+                    <label class="form-check-label" for="{{ question.name }}_3">３（普通 Fair）</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="{{ question.name }}" id="{{ question.name }}_4" value="2" required>
+                    <label class="form-check-label" for="{{ question.name }}_4">２（不好 Poor）</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="{{ question.name }}" id="{{ question.name }}_5" value="1" required>
+                    <label class="form-check-label" for="{{ question.name }}_5">１（非常不好 Bad）</label>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
+
+{% block heading_pair_comparison %}
+    <h1 class="display-4">(Part2/2) 語者判別實驗</h1>
+    <p class="lead">判斷兩份語音是否出自同一個人    Evaluation of Voice Similarity</p>
+    <hr class="my-4">
+    <p>
+        在這個實驗中，我們使用電腦合成及轉換人類語音。每一題都有兩個音檔，請使用耳機聽完後，根據兩個音檔的語者相似度作答（僅考慮說話者的音色，不須考慮語句內容）。
+    </p>
+    <p>
+        評分標準為：                                                                                 
+        <ul>
+            <li>同一語者 (Extremely similar)</li>
+            <li>非常相似 (Very similar)</li>
+            <li>還算相似 (Moderately similar)</li>
+            <li>不大相似 (Slightly similar)</li>
+            <li>完全不像 (Not at all similar)</li>
+        </ul>
+    </p>
+{% endblock %}
+{% block form_questions_pair_comparison %}
+    {% for question in questions_pair %}
+        <div class="card form-group">
+            <div class="card-header">{{ question.title }}</div>
+            <div class="card-body">
+                {% for audio_path in question.audio_paths %}
+                    <p>
+                        <audio controls src="{{ audio_path }}">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </p>
+                {% endfor %}
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="{{ question.name }}" id="{{ question.name }}_5" value="5" required>
+                    <label class="form-check-label" for="{{ question.name }}_5">同一語者 (Extremely similar)</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="{{ question.name }}" id="{{ question.name }}_4" value="4" required>
+                    <label class="form-check-label" for="{{ question.name }}_4">非常相似 (Very similar)</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="{{ question.name }}" id="{{ question.name }}_3" value="3" required>
+                    <label class="form-check-label" for="{{ question.name }}_3">還算相似 (Moderately similar)</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="{{ question.name }}" id="{{ question.name }}_2" value="2" required>
+                    <label class="form-check-label" for="{{ question.name }}_2">不大相似 (Slightly similar)</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="{{ question.name }}" id="{{ question.name }}_1" value="1" required>
+                    <label class="form-check-label" for="{{ question.name }}_1">完全不像 (Not at all similar)</label>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
