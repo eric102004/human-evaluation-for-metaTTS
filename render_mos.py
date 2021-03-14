@@ -18,14 +18,18 @@ def main(form_id):
     template = env.get_template("mos.html.jinja2")
 
     filelist_row = sheet_file_dict_nat[form_id]
-    filelist = [os.path.join('https://github.com/eric102004/human-evaluation-for-metaTTS/tree/master', filepath) for filepath in filelist_row ]
-    print(filelist)
-
-    '''    
+    filelist = [os.path.join('https://github.com/eric102004/human-evaluation-for-metaTTS/blob/master', filepath)+'?raw=true' for filepath in filelist_row ]
+    #print(filelist)
+   
     script = []
-    for i in range(20):
-        speaker_id = filelist[i].split('/')
-        script.append(filelist[i].split('/')[-1][:-4].split('_')[-1])
+    if form_id<29:
+        num_q = 20
+    elif form_id==29:
+        num_q = 19
+    for i in range(num_q):
+        speaker_id = filelist[i].split('/')[-2]
+        sentence = speaker_sen_dict[speaker_id] 
+        script.append(sentence)
     
     html = template.render(
         page_title=f"MOS 實驗表單 {form_id}",
@@ -37,10 +41,10 @@ def main(form_id):
                 "script": script[index-1],
                 "audio_path": filelist[index-1],
                 "name": f"q{index}"
-            } for index in range(1,21)],
+            } for index in range(1,num_q+1)],
     )
     print(html)
-    '''
+    
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--form_id", type=int)
