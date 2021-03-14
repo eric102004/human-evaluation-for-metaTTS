@@ -2,39 +2,32 @@
 """Generate forms for human evaluation."""
 
 from jinja2 import FileSystemLoader, Environment
+import sys
+import codecs
+sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
 
-
-def main():
+def main(form_id, num_type):
     """Main function."""
     loader = FileSystemLoader(searchpath="./templates")
     env = Environment(loader=loader)
     template = env.get_template("pair_comparison.html.jinja2")
 
     html = template.render(
-        page_title="語者判別實驗表單 1",
-        form_url="http://localhost:8888",
-        form_id=1,
+        page_title=f"語者判別實驗表單 {form_id}",
+        form_url="https://script.google.com/macros/s/AKfycbyOYo43xTRKdQDReFUvv4ILAmBW3P26M2Drs4wdfSRzSrayGtxPpe4kmz3KNBkeYMq13w/exec",
+        form_id=form_id,
         questions=[
             {
-                "title": "問題 1",
+                "title": f"問題 {index}",
                 "audio_paths": [
-                    "wavs/test1.wav",
-                    "wavs/test2.wav"
+                    f"wavs/test_{form_id}_{index}_real.wav",
+                    f"wavs/test_{form_id}_{index}_gen.wav"
                 ],
-                "name": "q1"
-            },
-            {
-                "title": "問題 2",
-                "audio_paths": [
-                    "wavs/test3.wav",
-                    "wavs/test4.wav"
-                ],
-                "name": "q2"
-            },
-        ]
+                "name": f"q{index}"
+            } for index in range(1,num_type*4+1)]
     )
     print(html)
 
 
 if __name__ == "__main__":
-    main()
+    main(1, 6)
