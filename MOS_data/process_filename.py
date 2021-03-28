@@ -19,11 +19,9 @@ def process_filename(mode, shot):
         shutil.copyfile(source_filepath, target_filepath)
 
 if __name__ == '__main__':
-    '''
-    mode_list = ['baseline_emb','baseline_ft','baseline_emb_ftemb','meta_emb','meta_ft','real','reference']
+    mode_list = ['baseline_emb','baseline_ft','baseline_emb_ftemb','meta_emb','meta_ft']
     shot_list = [1,5,20]
     for mode in mode_list:
         for shot in shot_list:
             process_filename(mode, shot)
-    '''
-    process_filename('reference',1)
+    #process_filename('reference',1)
