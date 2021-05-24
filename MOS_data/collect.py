@@ -178,6 +178,8 @@ class collect:
             target_path = os.path.join('refer','VCTK','sim',sdir,refer_filename)
             shutil.copyfile(source_path, target_path)
 
+        with open('refer_file_dict.json', 'w') as f:
+            json.dump(self.refer_filelist, f)
     
     def get_filelist(self):
         ## mos element ##
