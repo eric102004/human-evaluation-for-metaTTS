@@ -34,11 +34,12 @@ speaker_testid_dict['VCTK']['sim'] = {s:t for s,t in zip(VCTK_sim_speaker_list,V
 data_dir_dict = dict()
 for dataset in dataset_list:
     data_dir_dict[dataset] = dict()
+    source_dir_r = f'../..'
     if dataset == 'LibriTTS':
-        data_dir_dict[dataset]['real'] = '~/remote_disk/LibriTTS/test-clean'
+        data_dir_dict[dataset]['real'] = f'{source_dir_r}/LibriTTS/test-clean'
     elif dataset == 'VCTK':
-        data_dir_dict[dataset]['real'] = '~/remote_disk/VCTK'
-    source_dir = f'~/remote_disk/output/result/{dataset}'
+        data_dir_dict[dataset]['real'] = f'{source_dir_r}/VCTK'
+    source_dir = f'../../output/result/{dataset}'
     data_dir_dict[dataset]['recon'] = f'{source_dir}/672c4ace93c04b57a48911549ef0e609/base_emb_vad/audio/Testing'
     data_dir_dict[dataset]['base_emb_vad'] = f'{source_dir}/672c4ace93c04b57a48911549ef0e609/base_emb_vad/audio/Testing'
     data_dir_dict[dataset]['meta_emb_vad'] = f'{source_dir}/960dba64771045a9b1d4e48dd90b2270/meta_emb_vad/audio/Testing'

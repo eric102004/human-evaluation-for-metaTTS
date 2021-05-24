@@ -80,10 +80,10 @@ class collect:
                                 sdir = source_filename.split('_')[0]
                                 source_wav_filename = source_filename + '.wav'
                                 source_lab_filename = source_filename + '.lab'
-                                source_wav_path = os.path.join(self.data_dir_dict[dataset][mode],sdir,source_filename+'.wav')
-                                source_lab_path = os.path.join(self.data_dir_dict[dataset][mode],sdir,source_filename+'.lab')
+                                source_wav_path = os.path.join(self.data_dir_dict[dataset][model],sdir,source_filename+'.wav')
+                                source_lab_path = os.path.join(self.data_dir_dict[dataset][model],sdir,source_filename+'.lab')
                         else:
-                            wav_dir = os.path.join(self.data_dir_dict[model], f'test_{tid}')
+                            wav_dir = os.path.join(self.data_dir_dict[dataset][model], f'test_{tid:03d}')
                             if model == 'recon':
                                 for filename in os.listdir(wav_dir):
                                     if filename.endswith('recon.wav'):
@@ -98,9 +98,15 @@ class collect:
                                         break
                         #get target path
                         target_wav_path = os.path.join(model, dataset, mode,self.speaker_id_map[dataset][sid], source_wav_filename)
+                        if model == 'real':
+                            target_lab_path = os.path.join(model , dataset, mode,self.speaker_id_map[dataset][sid], source_lab_filename)
                         # move file
+                        #print('source_wav_path:',source_wav_path)
+                        #print('target_wav_path:',target_wav_path)
                         shutil.copyfile(source_wav_path, target_wav_path) 
                         if model == 'real':
+                            #print('source_lab_path:',source_lab_path)
+                            #print('target_lab_path:',target_lab_path)
                             shutil.copyfile(source_lab_path, target_lab_path)
     def get_file_script(self):
         pass
