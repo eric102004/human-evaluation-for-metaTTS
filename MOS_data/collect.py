@@ -62,6 +62,11 @@ class collect:
 
 
     def move_file(self):
+        self.real_filelist = dict()
+        for dataset in self.dataset_list:
+            self.real_filelist[dataset] = dict()
+            for mode in self.mode_list:
+                self.real_filelist[dataset][mode] = dict()
         for model in self.model_list:
             for dataset in self.dataset_list:
                 for mode in self.mode_list:
@@ -69,6 +74,7 @@ class collect:
                         # get source_path
                         if model == 'real':
                             source_filename = self.sq_list[dataset][tid]['qry_id'][0]
+                            self.real_filelist[dataset][mode][sid] = source_filename
                             if dataset == 'LibriTTS':
                                 sdir = source_filename.split('_')[0]
                                 subdir = source_filename.split('_')[1]
@@ -108,8 +114,82 @@ class collect:
                             #print('source_lab_path:',source_lab_path)
                             #print('target_lab_path:',target_lab_path)
                             shutil.copyfile(source_lab_path, target_lab_path)
-    def get_file_script(self):
-        pass
+    
+    def get_refer_file(self):
+        # generate dir
+        if not os.path.exists('refer'):
+            os.mkdir('refer')
+        for dataset in self.dataset_list:
+            if not os.path.exists(os.path.join('refer',dataset)):
+                os.mkdir(os.path.join('refer',dataset))
+                for sid in self.speaker_id_map[dataset]:
+                    if not os.path.exists(os.path.join('refer',dataset,sid)):
+                        os.mkdir(os.path.join('refer',dataset,sid))
+        # get refer_filelist and move file
+        self.refer_filelist = dict()
+        #     LibriTTS
+        self.refer_filelist['LibriTTS'] = dict()
+        for sid in self.speaker_testid_dict:
+            # get available filelist
+            filelist = set()
+            real_id = self.speaker_id_map[sid]
+            for subdir in os.listdir(os.path.join(self.data_dir_dict['LibriTTS']['real'],real_id)):
+                wav_dir = os.path.join(self.data_dir_dict['LibriTTS']['real'],real_id,subdir)
+                for filename in os.listdir(wav_dir):
+                    if filename.endswith('.wav'):
+                    filelist.add(filename)
+            #   remove filename in self.real_filelist
+            rm_fileset = set(self.real_filelist['LibriTTS']['sim'])
+            for mode in self.mode_list:
+                rm_fileset.add(self.real_filelist['LibriTTS'][mode][sid] + '.wav')
+            filelist = filelist - rm _fileset
+            # choose one file, add to self.refer_filelist
+            refer_filename = random.choice(filelist)
+            self.refer_filelist['LibriTTS'][sid] = refer_filename
+            #copy to target dir
+            sdir = refer_filename.split('_')[0]
+            subdir = refer_filename.split('_')[1]
+            source_path = os.path.join(self.data_dir_dict['LibriTTS']['real'], sdir, subdir, refer_filename)
+            target_path = os.paht.join('refer','LibriTTS',sid,refer_filename)
+            shutil.copyfile(source_path, target_path)
+        #     VCTK
+        self.refer_filelist['VCTK'] = dict()
+        for sid in self.speaker_testid_dict:
+            # get available filelist
+            filelist = set()
+            real_id = self.speaker_id_map[sid]
+            wav_dir = os.path.join(self.data_dir_dict['VCTK']['real'],real_id)
+            for filename in os.listdir(wav_dir):
+                if filename.endswith('.wav'):
+                filelist.add(filename)
+            #   remove filename in self.real_filelist
+            rm_fileset = set(self.real_filelist['VCTK']['sim'])
+            for mode in self.mode_list:
+                rm_fileset.add(self.real_filelist['VCTK'][mode][sid] + '.wav')
+            filelist = filelist - rm _fileset
+            # choose one file, add to self.refer_filelist
+            refer_filename = random.choice(filelist)
+            self.refer_filelist['VCTK'][sid] = refer_filename
+            #copy to target dir
+            sdir = refer_filename.split('_')[0]
+            source_path = os.path.join(self.data_dir_dict['VCTK']['real'], sdir, refer_filename)
+            target_path = os.paht.join('refer','VCTK',sid,refer_filename)
+            shutil.copyfile(source_path, target_path)
+
+    
+    def get_filelist(self):
+        ## mos element ##
+        # (wav_filename, script)
+        ## sim element ##
+        # (test_wav_filename, refer_wav_filename)
+        self.mos_filelist = []
+        self.sim_filelist = []
+    
+    
+    def get_script(self, filepath):
+        with open(filepath, 'r+') as f:
+            lines = f.readlines()
+        return lines[0].strip()
 
     def get_sheet_to_filelist_dict(self):
         pass
