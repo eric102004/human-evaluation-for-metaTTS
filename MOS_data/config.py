@@ -1,3 +1,6 @@
+total_nq = 300
+mos_nq = 25
+sim_nq = 15
 target_step = 10
 n_LibriTTS_speaker = 38
 n_VCTK_speaker = 108

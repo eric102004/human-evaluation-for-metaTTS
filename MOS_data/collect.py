@@ -7,6 +7,9 @@ import config
 
 class collect:
     def __init__(self):
+        self.total_nq = config.total_nq
+        self.mos_nq = config.mos_nq      # 300 / 25 = 12
+        self.sim_nq = config.sim_nq      # 300 / 15 = 20
         self.target_step = config.target_step
         self.n_LibriTTS_speaker = config.n_LibriTTS_speaker
         self.n_VCTK_speaker = config.n_VCTK_speaker
@@ -183,24 +186,93 @@ class collect:
     
     def get_filelist(self):
         ## mos element ##
-        # (wav_filename, script)
+        # (wav_fileurl, script)
         ## sim element ##
-        # (test_wav_filename, refer_wav_filename)
+        # (test_wav_fileurl, refer_wav_fileurl)
+        suffix_dict = {'LibriTTS':'original.txt', 'VCTK':'.lab'}
         self.mos_filelist = []
         self.sim_filelist = []
-    
+        url_pref = 'https://github.com/eric102004/human-evaluation-for-metaTTS/blob/master/MOS_data'
+        url_suf = '?raw=true'
+        # collect mos filelist
+        for model in self.model_list:
+            for dataset in self.dataset_list:
+                for sid in self.speaker_testid_dict[dataset]['mos']:
+                    real_id = self.speaker_id_map[dataset][sid]
+                    # get wav_fileurl
+                    for fn in os.listdir(os.path.join(model, dataset, 'mos',real_id)):
+                        if fn.endswith('.wav'):
+                            wav_fn = fn
+                            break
+                    wav_fileurl = os.path.join(url_pref, model,dataset,'mos',real_id,wav_fn)+url_suf
+                    # get script
+                    for fn in os.listdir(os.path.join('real',dataset,'mos',real_id)):
+                        if fn.endswith(suffix_dict[dataset]):
+                            script = self.get_script(os.path.join('real',dataset,'mos',real_id,fn))
+                            break
+                    self.mos_filelist.append((wav_fileurl, script))
+        assert(len(self.mos_filelist)==self.total_nq)
+        # collect sim filelist
+        for model in self.model_list:
+            for dataset in self.dataset_list:
+                for sid in self.speaker_testid_dict[dataset]['sim']:
+                    real_id = self.speaker_id_map[dataset][sid]
+                    # get test_wav_fileurl
+                    for fn in os.listdir(os.path.join(model, dataset, 'sim',real_id)):
+                        if fn.endswith('.wav'):
+                            wav_fn = fn
+                            break
+                    test_wav_fileurl = os.path.join(url_pref, model,dataset,'sim',real_id,wav_fn)+url_suf
+                    # get refer_wav_fileurl
+                    for fn in os.listdir(os.path.join('refer',dataset,'sim',real_id)):
+                        if fn.endswith('.wav'):
+                            wav_fn = fn
+                            break
+                    refer_wav_fileurl = os.path.join(url_pref,'refer',dataset,'sim',real_id,wav_fn)+url_suf
+                    self.sim_filelist.append((test_wav_fileurl, refer_wav_fileurl))
+        assert(len(self.sim_filelist)==self.total_nq)
+
+        # shuffle filelist
+        random.shuffle(self.mos_filelist)
+        random.shuffle(self.sim_filelist)
+
+        with open('mos_filelist.json', 'w') as f:
+            json.dump(self.mos_filelist, f)
+        with open('sim_filelist.json', 'w') as f:
+            json.dump(self.sim_filelist, f)
+
     
     def get_script(self, filepath):
         with open(filepath, 'r+') as f:
             lines = f.readlines()
         return lines[0].strip()
 
-    def get_sheet_to_filelist_dict(self):
-        pass
+    def load_filelist(self):
+        with open('mos_filelist.json', 'r') as f:
+            self.mos_filelist = json.load(f)
+        with open('sim_filelist.json', 'r') as f:
+            self.sim_filelist = json.load(f)
+
+
+    def get_sheet2file_matrix(self):
+        self.mos_sheet2file_matrix = []
+        for i in range(self.total_nq//self.mos_nq):
+            self.mos_sheet2file_matrix.append(self.mos_filelist[i*self.mos_nq:(i+1)*self.mos_nq])
+        self.sim_sheet2file_matrix = []
+        for i in range(self.total_nq//self.sim_nq):
+            self.sim_sheet2file_matrix.append(self.sim_filelist[i*self.sim_nq:(i+1)*self.sim_nq])
+        
+        with open('mos_sheet2file.json', 'w') as f:
+            json.dump(self.mos_sheet2file_matrix, f)
+        with open('sim_sheet2file.json', 'w') as f:
+            json.dump(self.sim_sheet2file_matrix, f)
 
 
 if __name__ == '__main__':
     main = collect()
-    main.generate_dir()
-    main.move_file()
-    main.get_refer_file()
+    #main.generate_dir()
+    #main.move_file()
+    #main.get_refer_file()
+    #main.get_filelist()
+    main.load_filelist()
+    main.get_sheet2file_matrix()
