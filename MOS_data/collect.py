@@ -132,6 +132,32 @@ class collect:
                 real_id = self.speaker_id_map[dataset][sid]
                 if not os.path.exists(os.path.join('refer',dataset,'sim',real_id)):
                     os.mkdir(os.path.join('refer',dataset,'sim',real_id))
+        # get enroll filelist
+        self.refer_filelist = dict()
+        for dataset in self.dataset_list:
+            self.refer_filelist[dataset] = dict()
+            # get enrollment filelist:
+            with open(f'{dataset}_enroll.txt', 'r+') as f:
+                lines = f.readlines()
+            for i,line in enumerate(lines):
+                if lline.strip() == '':
+                    continue
+                sid = int(line.strip().split('\t')[1])
+                assert(sid in self.speaker_testid_dict[dataset]['sim'])
+                enroll = line.strip().split('\t')[3]
+                self.refer_filelist[dataset][sid] = enroll
+        # move file
+        for dataset in self.dataset_list:
+            for sid,r_file in self.refer_filelist[dataset].items():
+                real_id = self.speaker_id_map[dataset][sid]
+                if dataset == 'LibriTTS':
+                    subdir = r_file.split('_')[1]
+                    source_path = os.path.join(self.data_dir_dict[dataset]['real'],real_id,sbdir,r_file)
+                else:
+                    source_path = os.path.join(self.data_dir_dict[dataset]['real'],real_id,r_file)
+                target_path = os.path.join('refer',dataset,'sim',real_id,r_file)
+                shutil.copyfile(source_path, target_path)
+        '''
         # get refer_filelist and move file
         self.refer_filelist = dict()
         #     LibriTTS
@@ -183,7 +209,7 @@ class collect:
 
         with open('refer_file_dict.json', 'w') as f:
             json.dump(self.refer_filelist, f)
-    
+        '''
     def get_filelist(self):
         ## mos element ##
         # (wav_fileurl, script)
@@ -270,9 +296,9 @@ class collect:
 
 if __name__ == '__main__':
     main = collect()
-    #main.generate_dir()
-    #main.move_file()
-    #main.get_refer_file()
-    #main.get_filelist()
+    main.generate_dir()
+    main.move_file()
+    main.get_refer_file()
+    main.get_filelist()
     main.load_filelist()
     main.get_sheet2file_matrix()
