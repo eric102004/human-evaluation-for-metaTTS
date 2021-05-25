@@ -1,4 +1,4 @@
-total_nq = 300
+total_nq = 660
 mos_nq = 25
 sim_nq = 15
 target_step = 10

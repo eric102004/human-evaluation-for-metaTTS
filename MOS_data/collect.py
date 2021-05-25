@@ -140,11 +140,11 @@ class collect:
             with open(f'{dataset}_enroll.txt', 'r+') as f:
                 lines = f.readlines()
             for i,line in enumerate(lines):
-                if lline.strip() == '':
+                if line.strip() == '':
                     continue
                 sid = int(line.strip().split('\t')[1])
                 assert(sid in self.speaker_testid_dict[dataset]['sim'])
-                enroll = line.strip().split('\t')[3]
+                enroll = line.strip().split('\t')[3] + '.wav'
                 self.refer_filelist[dataset][sid] = enroll
         # move file
         for dataset in self.dataset_list:
@@ -152,7 +152,7 @@ class collect:
                 real_id = self.speaker_id_map[dataset][sid]
                 if dataset == 'LibriTTS':
                     subdir = r_file.split('_')[1]
-                    source_path = os.path.join(self.data_dir_dict[dataset]['real'],real_id,sbdir,r_file)
+                    source_path = os.path.join(self.data_dir_dict[dataset]['real'],real_id,subdir,r_file)
                 else:
                     source_path = os.path.join(self.data_dir_dict[dataset]['real'],real_id,r_file)
                 target_path = os.path.join('refer',dataset,'sim',real_id,r_file)
