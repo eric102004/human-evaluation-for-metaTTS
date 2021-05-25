@@ -98,13 +98,13 @@ class collect:
                                 for filename in os.listdir(wav_dir):
                                     if filename.endswith('recon.wav'):
                                         source_wav_filename = filename
-                                        source_path = os.path.join(wav_dir, filename)
+                                        source_wav_path = os.path.join(wav_dir, filename)
                                         break
                             else:
                                 for filename in os.listdir(wav_dir):
                                     if filename.endswith(f'_{self.target_step}.synth.wav'):
                                         source_wav_filename = filename
-                                        source_path = os.path.join(wav_dir, filename)
+                                        source_wav_path = os.path.join(wav_dir, filename)
                                         break
                         #get target path
                         target_wav_path = os.path.join(model, dataset, mode,self.speaker_id_map[dataset][sid], source_wav_filename)
