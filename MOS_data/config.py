@@ -1,6 +1,6 @@
 total_nq = 660
-mos_nq = 25
-sim_nq = 15
+mos_nq = 22             # 30 sheets
+sim_nq = 15             # 44 sheets
 target_step = 10
 n_LibriTTS_speaker = 38
 n_VCTK_speaker = 108
