@@ -2,13 +2,17 @@
 """Generate forms for human evaluation."""
 
 from jinja2 import FileSystemLoader, Environment
+import json
 import sys
 import os
 import argparse
 import codecs
 sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
 
-from MOS_data.sheet_file_dict import sheet_file_dict_sim
+with open('MOS_data/sim_sheet2file.json') as f:
+    sim_sheet2file= json.load(f)
+    assert(len(sim_sheet2file)==44)
+    assert(len(sim_sheet2file[0])==15)
 
 def main(form_id):
     """Main function."""
@@ -17,28 +21,20 @@ def main(form_id):
     template = env.get_template("pair_comparison.html.jinja2")
 
 
-    filelist_row = sheet_file_dict_sim[form_id]
-    filelist = []
-    for file_real, file_gen in filelist_row:
-        file_real_path = os.path.join('https://github.com/eric102004/human-evaluation-for-metaTTS/blob/master', file_real) + '?raw=true'
-        file_gen_path = os.path.join('https://github.com/eric102004/human-evaluation-for-metaTTS/blob/master', file_gen) + '?raw=true'
-        filelist.append((file_real_path, file_gen_path))
-    
-    if form_id<49:
-        num_q = 12
-    elif form_id == 49:
-        num_q = 11
+    filelist = sim_sheet2file[form_id-30]
+
+    num_q = 15
     
     html = template.render(
-        page_title=f"語者判別實驗表單 {form_id}",
-        form_url="https://script.google.com/macros/s/AKfycbyeCBqch0-qhvc3_-ummqt1H6rWAt5SfaNudfiwbRThf7rDRzPpbPT1FuMGbOZXBHPm/exec",
+        page_title=f"語者判別實驗表單 {form_id-30}",
+        form_url="https://script.google.com/macros/s/AKfycbzRkXi7oW_2uMlZpwIgM2rNwyOM4slGHtubS__AcmU0wV-vS6ldM6g8lCLbqSb9QiR3/exec",
         form_id=form_id,
         questions=[
             {
                 "title": f"問題 {index}",
                 "audio_paths": [
-                    filelist[index-1][0],
-                    filelist[index-1][1]
+                    filelist[index-1][1],
+                    filelist[index-1][0]
                 ],
                 "name": f"q{index}"
             } for index in range(1,num_q+1)]
