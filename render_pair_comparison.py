@@ -27,7 +27,7 @@ def main(form_id):
     
     html = template.render(
         page_title=f"語者判別實驗表單 {form_id-30}",
-        form_url="https://script.google.com/macros/s/AKfycbzRkXi7oW_2uMlZpwIgM2rNwyOM4slGHtubS__AcmU0wV-vS6ldM6g8lCLbqSb9QiR3/exec",
+        form_url="https://script.google.com/macros/s/AKfycbw2mCMqkPcsPbhJgx39yTNMOzpKeThuKgRwuFMMRIMGfHhX_08Ra8FWoAt-Dv7Ug3ur1A/exec",
         form_id=form_id,
         questions=[
             {

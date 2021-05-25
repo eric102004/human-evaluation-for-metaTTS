@@ -35,7 +35,7 @@ def main(form_id):
     '''
     html = template.render(
         page_title=f"MOS 實驗表單 {form_id}",
-        form_url="https://script.google.com/macros/s/AKfycbys0SzKRa--zMxnDAIIXEWGAnkh2HOWC5zUD9eaQphn5KvyIOMYx9Ezd08PRqv21C67/exec",
+        form_url="https://script.google.com/macros/s/AKfycbwq551Zbsn_G7UPPpTL_FFHFBV_g0edf88U0C-3denwbla6leuaTIYYt_fFPQaWXgw/exec",
         form_id=form_id,
         questions=[
             {
